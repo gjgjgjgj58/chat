@@ -6,8 +6,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "nodemon server.js --exec babel-node"
     },
-    "author": "",
-    "license": "MIT",
+    "author": "gjgjgjgj58",
     "devDependencies": {
         "@babel/core": "^7.22.1",
         "@babel/node": "^7.22.1",
