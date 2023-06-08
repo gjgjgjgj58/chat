@@ -17,9 +17,9 @@ const Img = styled.img`
     user-select: none;
     content: url(${(props) => (!props.avatar ? '/images/user.png' : props.avatar)});
     cursor: pointer;
+    image-rendering: -webkit-optimize-contrast;
     image-rendering: -moz-crisp-edges;
     image-rendering: -o-crisp-edges;
-    image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
     transform: translateZ(0);
     backface-visibility: hidden;

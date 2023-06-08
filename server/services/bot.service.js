@@ -35,7 +35,16 @@ export default class BotService extends ChatService {
                 })
             });
 
-            if (!botRes.ok) {
+            let atext = '';
+
+            // simsimi status code
+            if (botRes.ok) {
+                atext = botJson.atext;
+            } else if (botRes.status === 228) {
+                atext = '질문에 대한 답변을 찾을 수 없어요.';
+            } else if (botRes.status === 429) {
+                atext = '심심이의 한도가 다 되었습니다. 더 이상 채팅할 수 없어요.';
+            } else {
                 return errResponse(botRes.status, 'Bot Server Error');
             }
 
@@ -46,7 +55,7 @@ export default class BotService extends ChatService {
                 roomId: this.chat.roomId,
                 sender: this.simsimi.sender,
                 senderAvatar: this.simsimi.senderAvatar,
-                message: botJson.atext
+                message: atext
             };
 
             this.chat = new Chat(payload);
