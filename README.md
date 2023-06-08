@@ -19,7 +19,7 @@ react & nodejs
 
 ## .env
 - client 폴더 내 .env 생성 필요
-- [SIMSIMI WORKSHOP](https://workshop.simsimi.com/document)에서 API KEY 발급 후 작성
+- [SIMSIMI WORKSHOP](https://workshop.simsimi.com/)에서 API KEY 발급 후 작성
 
 ### example
 ```
