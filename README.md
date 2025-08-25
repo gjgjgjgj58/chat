@@ -30,6 +30,12 @@ SIMSIMI_API_URL=https://wsapi.simsimi.com/190410/talk
 SIMSIMI_API_KEY=xxx
 ```
 
+### 설치법
+- client/server 두 폴더 수행
+1. npm init -y
+2. npm install
+3. npm start(package.json scripts의 start)
+
 ## TODO
 - OAuth 2.0
 - socket.io 실시간 채팅

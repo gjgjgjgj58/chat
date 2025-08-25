@@ -58,17 +58,19 @@ module.exports = {
         open: true,
         host: 'localhost',
         port: 3000,
-        proxy: {
-            '/api': {
+        proxy: [
+            {
+                context: ['/api'],
                 target: 'http://localhost:3001',
                 changeOrigin: true
             },
-            '/images': {
+            {
+                context: ['/images'],
                 target: 'http://localhost:3001',
                 secure: true,
                 changeOrigin: true
             }
-        },
+        ],
         historyApiFallback: true
     }
 };
