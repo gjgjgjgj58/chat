@@ -3,6 +3,7 @@ import LoadingPage from './LoadingPage';
 import Map from '@/components/map/Map';
 import {withContext} from '@/utils/common';
 import '@/components/chat/Chat.css';
+import '@/components/map/Map.css';
 
 class MapPage extends React.Component {
     constructor(props) {
