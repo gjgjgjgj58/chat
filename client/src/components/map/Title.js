@@ -22,18 +22,20 @@ export default class Title extends React.Component {
         }
     };
 
-    showMap = async (e) => {
+    showChat = async (e) => {
         e.preventDefault();
-        navigate('/map');
+        navigate('/');
     };
 
     render = () => {
         return (
-            <>
+            <div className={'chatApp__convTitleWrapper'}>
                 <div className={'chatApp__convTitle'}>{this.props.owner}'s display</div>
-                <Button sendButtonIcon='logout' onClick={this.handleSignOut}/>
-                <Button sendButtonIcon='map' onClick={this.showMap}/>
-            </>
+                <div className={'chatApp__convButtonWrapper'}>
+                    <Button sendButtonIcon='logout' onClick={this.handleSignOut}/>
+                    <Button sendButtonIcon='chat' onClick={this.showChat}/>
+                </div>
+            </div>
         );
     };
 }

@@ -5,6 +5,7 @@ import ProtectedPage from './pages/ProtectedPage';
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
 import ChatPage from './pages/ChatPage';
+import MapPage from './pages/MapPage';
 import { AvatarModal as Modal, AvatarModalContext as ModalContext } from './components/common/AvatarModal';
 import './App.css';
 
@@ -39,6 +40,7 @@ export default class App extends React.Component {
                             <Route path='/sign/up' element={<SignUpPage />} />
                             <Route element={<ProtectedPage />}>
                                 <Route path='/' element={<ChatPage />} />
+                                <Route path='/map' element={<MapPage />} />
                             </Route>
                         </Routes>
                     </BrowserRouter>

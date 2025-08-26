@@ -244,6 +244,19 @@
     outline: none;
 }
 
+.chatApp__convTitleWrapper {
+    display: flex;
+    justify-content: space-between;
+    margin: 1rem 1rem 0;
+}
+
+.chatApp__convButtonWrapper {
+    float: right;
+    position: relative;
+    display: flex;
+    flex-direction: row-reverse;
+}
+
 .chatApp__convButton {
     float: right;
     position: relative;
@@ -263,6 +276,7 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
+    margin-left: 5px;
 }
 
 .chatApp__convButton:hover {
@@ -433,4 +447,9 @@
     60% {
         background-color: #606060;
     }
+}
+
+#map {
+    height: 50rem;
+    margin-top: 1rem;
 }
