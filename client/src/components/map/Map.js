@@ -10,6 +10,8 @@ import VectorLayer from 'ol/layer/Vector';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
 import {Style, Text, Fill, Stroke, Icon} from 'ol/style';
+import Overlay from 'ol/Overlay';
+import Select from 'ol/interaction/Select';
 
 const projection = 'EPSG:3857';
 
@@ -50,6 +52,7 @@ export default function Map(props) {
     const [mapObject, setMapObject] = useState({});
     useEffect(() => {
 
+        const apiKey = process.env.REACT_APP_VWORLD_API_KEY;
         const simsimiLonLat = [127.0543980571477, 37.505139387657884]; // 심심이주식회사 위경도
 
         const vectorLayer = new VectorLayer({
@@ -58,11 +61,50 @@ export default function Map(props) {
         });
 
         const vworldBaseLayer = new TileLayer({
-            source: new XYZ({url: 'http://xdworld.vworld.kr:8080/2d/Base/202002/{z}/{x}/{y}.png'}),
+            source: new XYZ({url: `https://api.vworld.kr/req/wmts/1.0.0/${apiKey}/Base/{z}/{y}/{x}.png`}),
             properties: {name: 'base-vworld-base'},
             zIndex: 1,
             preload: Infinity
         });
+
+        /**
+         * Elements that make up the popup.
+         */
+        const container = document.getElementById('popup');
+        const content = document.getElementById('popup-content');
+        const closer = document.getElementById('popup-closer');
+
+        /**
+         * Create an overlay to anchor the popup to the map.
+         */
+        const overlay = new Overlay({
+            element: container,
+            autoPan: {
+                animation: {
+                    duration: 250,
+                },
+            },
+        });
+
+        /**
+         * Add a click handler to hide the popup.
+         * @return {boolean} Don't follow the href.
+         */
+        closer.onclick = function () {
+            overlay.setPosition(undefined);
+            closer.blur();
+            const interactions = map.getInteractions();
+            let selectInteraction;
+            interactions.forEach((interaction) => {
+                if (interaction instanceof Select) {
+                    selectInteraction = interaction;
+                }
+            });
+            if (selectInteraction) {
+                selectInteraction.getFeatures().clear();
+            }
+            return false;
+        };
 
         const map = new OlMap({
             layers: [
@@ -73,11 +115,32 @@ export default function Map(props) {
             view: new View({
                 projection: getProjection(projection),
                 center: fromLonLat(simsimiLonLat, getProjection(projection)),
-                zoom: 12
+                zoom: 14
             }),
+            overlays: [overlay],
         });
 
         map.getTargetElement().classList.add('spinner');
+
+        const selectSingleClick = new Select();
+
+        selectSingleClick.on('select', (e) => {
+            const feature = e.selected[0];
+            console.log(feature);
+            if (feature) {
+                const coordinate = feature.getGeometry().getCoordinates();
+                content.innerHTML = '<p>' + feature.get("name") + '</p><code></code>';
+                overlay.setPosition(coordinate);
+            }
+            const deselectedFeature = e.deselected[0];
+            if (deselectedFeature && !feature) {
+                overlay.setPosition(undefined);
+                closer.blur();
+                return false;
+            }
+        });
+
+        map.addInteraction(selectSingleClick);
 
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -94,8 +157,8 @@ export default function Map(props) {
                     vectorLayer.getSource().addFeature(createFeature(simsimiLonLat, '심심이 위치', '/images/chatbot.png')); // vectorSource에 피처 추가
                     map.getView().animate({
                         center: fromLonLat(lonLat, getProjection(projection)),
-                        zoom: 14,
-                        duration: 800, // Animation duration in milliseconds
+                        zoom: 16,
+                        duration: 400, // Animation duration in milliseconds
                         // Optional: add an easing function for different animation effects
                         // easing: easeIn, // Requires importing easeIn from 'ol/easing'
                     });
@@ -132,9 +195,13 @@ export default function Map(props) {
     }, []);
 
     return (
-        <>
+        <div className={'chatApp__mapContainer'}>
             <Title owner={props.outletContext.user.name}/>
             <div id="map" value={mapObject}></div>
-        </>
+            <div id="popup" className={'ol-popup'}>
+                <a href="#" id="popup-closer" className={'ol-popup-closer'}></a>
+                <div id="popup-content"></div>
+            </div>
+        </div>
     );
 }

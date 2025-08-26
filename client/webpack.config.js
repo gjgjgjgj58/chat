@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
     entry: path.join(__dirname, 'src', 'index.js'),
@@ -46,7 +47,13 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: path.join(__dirname, 'public', 'index.html')
         }),
-        new webpack.HotModuleReplacementPlugin()
+        new webpack.HotModuleReplacementPlugin(),
+        new Dotenv({
+            // .env 파일의 경로를 지정할 수 있습니다. 기본값은 프로젝트 루트입니다.
+            path: './.env',
+            // .env 파일의 환경 변수를 process.env에 로드하는 것을 억제합니다. (React 프로젝트에서는 주로 필요 없음)
+            // systemvars: true
+        })
     ],
     resolve: {
         alias: {
