@@ -4,27 +4,26 @@ import Title from "@/components/map/Title";
 import {Map as OlMap, View} from 'ol';
 import {fromLonLat, get as getProjection} from 'ol/proj';
 import {Tile as TileLayer} from 'ol/layer';
-import {OSM} from 'ol/source';
+import {OSM, XYZ} from 'ol/source';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
-import Style from 'ol/style/Style';
-import Text from 'ol/style/Text';
-import Fill from 'ol/style/Fill';
-import Stroke from 'ol/style/Stroke';
+import {Style, Text, Fill, Stroke} from 'ol/style';
 import CircleStyle from 'ol/style/Circle';
+
+const projection = 'EPSG:3857';
 
 const setTextStyle = (text) => {
     return new Style({
         image: new CircleStyle({
-            radius: 7,
+            radius: 6,
             fill: new Fill({
-                color: 'rgba(0, 255, 0, 0.4)' // Red fill with transparency
+                color: 'blue'
             }),
             stroke: new Stroke({
-                color: 'green',
-                width: 2
+                color: 'white',
+                width: 1.5
             })
         }),
         text: new Text({
@@ -48,18 +47,23 @@ export default function Map(props) {
         const vectorSource = new VectorSource();
         const vectorLayer = new VectorLayer({
             source: vectorSource,
+            zIndex: 2
+        });
+        const vworldBaseLayer = new TileLayer({
+            source: new XYZ({url: 'http://xdworld.vworld.kr:8080/2d/Base/202002/{z}/{x}/{y}.png'}),
+            properties: {name: 'base-vworld-base'},
+            zIndex: 1,
+            preload: Infinity
         });
         const map = new OlMap({
             layers: [
-                new TileLayer({
-                    source: new OSM()
-                }),
+                vworldBaseLayer,
                 vectorLayer,
             ],
             target: 'map',
             view: new View({
-                projection: getProjection('EPSG:3857'),
-                center: fromLonLat([126.752, 37.4713], getProjection('EPSG:3857')),
+                projection: getProjection(projection),
+                center: fromLonLat([126.752, 37.4713], getProjection(projection)),
                 zoom: 12
             }),
         });
@@ -82,7 +86,7 @@ export default function Map(props) {
                     // 지도에 표시하거나 다른 위치 기반 서비스에 활용할 수 있습니다.
                     pointFeature.setStyle(setTextStyle("나의 위치"));
                     vectorSource.addFeature(pointFeature); // vectorSource에 피처 추가
-                    map.getView().setCenter(fromLonLat(lonLat, getProjection('EPSG:3857'))); // 위치 이동
+                    map.getView().setCenter(fromLonLat(lonLat, getProjection(projection))); // 위치 이동
                     map.getView().setZoom(16);
                 },
                 function (error) {
