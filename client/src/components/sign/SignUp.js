@@ -86,6 +86,12 @@ export default class SignUp extends React.Component {
         };
     };
 
+    handleSignIn = async (e) => {
+        e.preventDefault();
+
+        navigate('/sign/in');
+    };
+
     render = () => {
         return (
             <div className='login-form'>
@@ -120,6 +126,7 @@ export default class SignUp extends React.Component {
                         </div>
                     </div>
                     <div className='action'>
+                        <button onClick={this.handleSignIn}>Back</button>
                         <button type='submit'>Submit</button>
                     </div>
                 </form>

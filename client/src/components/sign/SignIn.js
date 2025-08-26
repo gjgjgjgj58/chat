@@ -29,7 +29,7 @@ export default class SignIn extends React.Component {
         this.setState({ password: e.currentTarget.value });
     };
 
-    onClickSignInHander = async (e) => {
+    onClickSignInHandler = async (e) => {
         e.preventDefault();
 
         if (!this.state.email) {
@@ -53,7 +53,7 @@ export default class SignIn extends React.Component {
         );
     };
 
-    onClickSignUpHander = async (e) => {
+    onClickSignUpHandler = async (e) => {
         e.preventDefault();
 
         navigate('/sign/up');
@@ -79,8 +79,8 @@ export default class SignIn extends React.Component {
                         </a>
                     </div>
                     <div className='action'>
-                        <button onClick={this.onClickSignInHander}>Sign In</button>
-                        <button onClick={this.onClickSignUpHander}>Sign Up</button>
+                        <button onClick={this.onClickSignInHandler}>Sign In</button>
+                        <button onClick={this.onClickSignUpHandler}>Sign Up</button>
                     </div>
                 </form>
             </div>

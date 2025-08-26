@@ -30,7 +30,7 @@ export default class Title extends React.Component {
     render = () => {
         return (
             <>
-                <div className={'chatApp__convTitle'}>{this.props.owner}'s display</div>
+                <div className={'chatApp__convTitle'}>{this.props.owner}의 채팅방</div>
                 <Button sendButtonIcon='logout' onClick={this.handleSignOut}/>
                 <Button sendButtonIcon='map' onClick={this.showMap}/>
             </>

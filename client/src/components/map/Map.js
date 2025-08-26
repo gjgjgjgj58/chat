@@ -9,22 +9,18 @@ import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import Feature from 'ol/Feature';
 import Point from 'ol/geom/Point';
-import {Style, Text, Fill, Stroke} from 'ol/style';
-import CircleStyle from 'ol/style/Circle';
+import {Style, Text, Fill, Stroke, Icon} from 'ol/style';
 
 const projection = 'EPSG:3857';
 
-const setTextStyle = (text) => {
+const setFeatureStyle = (text, avatar) => {
+    const src = !avatar ? '/images/user.png' : avatar;
     return new Style({
-        image: new CircleStyle({
-            radius: 6,
-            fill: new Fill({
-                color: 'blue'
-            }),
-            stroke: new Stroke({
-                color: 'white',
-                width: 1.5
-            })
+        image: new Icon({
+            src: src,
+            width: 40, // px
+            height: 40, // px
+            // anchor: [0.5, 1], // Anchor the icon at the bottom center
         }),
         text: new Text({
             text: text, // Text content
@@ -36,25 +32,38 @@ const setTextStyle = (text) => {
                 color: 'white',
                 width: 3
             }),
-            offsetY: 20 // Adjust vertical position relative to the point
+            offsetY: 36 // Adjust vertical position relative to the point
         })
     });
+}
+
+const createFeature = (lonLat, text, avatar) => {
+    const pointFeature = new Feature({
+        geometry: new Point(fromLonLat(lonLat)),
+        name: text, // 피처에 이름 속성 추가
+    });
+    pointFeature.setStyle(setFeatureStyle(text, avatar));
+    return pointFeature;
 }
 
 export default function Map(props) {
     const [mapObject, setMapObject] = useState({});
     useEffect(() => {
-        const vectorSource = new VectorSource();
+
+        const simsimiLonLat = [127.0543980571477, 37.505139387657884]; // 심심이주식회사 위경도
+
         const vectorLayer = new VectorLayer({
-            source: vectorSource,
+            source: new VectorSource(),
             zIndex: 2
         });
+
         const vworldBaseLayer = new TileLayer({
             source: new XYZ({url: 'http://xdworld.vworld.kr:8080/2d/Base/202002/{z}/{x}/{y}.png'}),
             properties: {name: 'base-vworld-base'},
             zIndex: 1,
             preload: Infinity
         });
+
         const map = new OlMap({
             layers: [
                 vworldBaseLayer,
@@ -63,7 +72,7 @@ export default function Map(props) {
             target: 'map',
             view: new View({
                 projection: getProjection(projection),
-                center: fromLonLat([126.752, 37.4713], getProjection(projection)),
+                center: fromLonLat(simsimiLonLat, getProjection(projection)),
                 zoom: 12
             }),
         });
@@ -75,22 +84,25 @@ export default function Map(props) {
                 function (position) {
                     // 성공했을 때 위치 정보를 사용하는 코드
                     map.getTargetElement().classList.remove('spinner'); // load end
+                    const myPositionLabel = '나의 위치';
                     const latitude = position.coords.latitude;  // 위도
                     const longitude = position.coords.longitude; // 경도
+                    console.dir(position);
                     console.log(`현재 위치: 위도 ${latitude}, 경도 ${longitude}`);
                     const lonLat = [longitude, latitude]; // 추가할 위치의 경위도
-                    const pointFeature = new Feature({
-                        geometry: new Point(fromLonLat(lonLat)),
-                        name: '나의 위치', // 피처에 이름 속성 추가
+                    vectorLayer.getSource().addFeature(createFeature(lonLat, myPositionLabel)); // vectorSource에 피처 추가
+                    vectorLayer.getSource().addFeature(createFeature(simsimiLonLat, '심심이 위치', '/images/chatbot.png')); // vectorSource에 피처 추가
+                    map.getView().animate({
+                        center: fromLonLat(lonLat, getProjection(projection)),
+                        zoom: 14,
+                        duration: 800, // Animation duration in milliseconds
+                        // Optional: add an easing function for different animation effects
+                        // easing: easeIn, // Requires importing easeIn from 'ol/easing'
                     });
-                    // 지도에 표시하거나 다른 위치 기반 서비스에 활용할 수 있습니다.
-                    pointFeature.setStyle(setTextStyle("나의 위치"));
-                    vectorSource.addFeature(pointFeature); // vectorSource에 피처 추가
-                    map.getView().setCenter(fromLonLat(lonLat, getProjection(projection))); // 위치 이동
-                    map.getView().setZoom(16);
                 },
                 function (error) {
                     // 실패했을 때 처리하는 코드
+                    map.getTargetElement().classList.remove('spinner'); // load end
                     let errorMessage = "위치 정보를 가져오는 데 실패했습니다.";
                     switch (error.code) {
                         case error.PERMISSION_DENIED:
@@ -106,11 +118,12 @@ export default function Map(props) {
                             errorMessage = "알 수 없는 오류가 발생했습니다."
                             break;
                     }
-                    console.error(errorMessage);
+                    alert(errorMessage);
                 }
             );
         } else {
-            console.log("이 브라우저에서는 Geolocation API를 지원하지 않습니다.");
+            map.getTargetElement().classList.remove('spinner'); // load end
+            alert("이 브라우저에서는 Geolocation API를 지원하지 않습니다.");
         }
 
         setMapObject({map});

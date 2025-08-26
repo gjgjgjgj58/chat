@@ -4,6 +4,12 @@
  * Modified by @gjgjgjgj58
  */
 
+@media screen and (max-width: 500px) {
+    .login-form {
+        width: 100% !important;
+    }
+}
+
 .login-form {
     background: #fff;
     width: 500px;
