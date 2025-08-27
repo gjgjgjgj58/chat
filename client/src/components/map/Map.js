@@ -4,7 +4,7 @@ import Title from "@/components/map/Title";
 import {Map as OlMap, View} from 'ol';
 import {fromLonLat, get as getProjection} from 'ol/proj';
 import {Tile as TileLayer} from 'ol/layer';
-import {OSM, XYZ} from 'ol/source';
+import {XYZ} from 'ol/source';
 import VectorSource from 'ol/source/Vector';
 import VectorLayer from 'ol/layer/Vector';
 import Feature from 'ol/Feature';
@@ -53,7 +53,11 @@ export default function Map(props) {
     useEffect(() => {
 
         const apiKey = process.env.REACT_APP_VWORLD_API_KEY;
+        const myPositionLabel = '나의 위치';
+        const myPositionSrc = props.outletContext.user.avatar;
+        const simsimiLabel = '심심이 위치';
         const simsimiLonLat = [127.0543980571477, 37.505139387657884]; // 심심이주식회사 위경도
+        const simsimiSrc = '/images/chatbot.png'; // 심심이 아바타
 
         const vectorLayer = new VectorLayer({
             source: new VectorSource(),
@@ -84,6 +88,7 @@ export default function Map(props) {
                     duration: 250,
                 },
             },
+            offset: [0, -20]
         });
 
         /**
@@ -122,7 +127,17 @@ export default function Map(props) {
 
         map.getTargetElement().classList.add('spinner');
 
-        const selectSingleClick = new Select();
+        const selectSingleClick = new Select({
+            style: function (feature) {
+                const label = feature.get('name');
+                if (label === myPositionLabel) {
+                    return setFeatureStyle(label, myPositionSrc);
+                } else if (label === simsimiLabel) {
+                    return setFeatureStyle(label, simsimiSrc);
+                }
+                return null;
+            }
+        });
 
         selectSingleClick.on('select', (e) => {
             const feature = e.selected[0];
@@ -147,14 +162,13 @@ export default function Map(props) {
                 function (position) {
                     // 성공했을 때 위치 정보를 사용하는 코드
                     map.getTargetElement().classList.remove('spinner'); // load end
-                    const myPositionLabel = '나의 위치';
                     const latitude = position.coords.latitude;  // 위도
                     const longitude = position.coords.longitude; // 경도
                     console.dir(position);
                     console.log(`현재 위치: 위도 ${latitude}, 경도 ${longitude}`);
                     const lonLat = [longitude, latitude]; // 추가할 위치의 경위도
-                    vectorLayer.getSource().addFeature(createFeature(lonLat, myPositionLabel)); // vectorSource에 피처 추가
-                    vectorLayer.getSource().addFeature(createFeature(simsimiLonLat, '심심이 위치', '/images/chatbot.png')); // vectorSource에 피처 추가
+                    vectorLayer.getSource().addFeature(createFeature(lonLat, myPositionLabel, myPositionSrc)); // vectorSource에 피처 추가
+                    vectorLayer.getSource().addFeature(createFeature(simsimiLonLat, simsimiLabel, simsimiSrc)); // vectorSource에 피처 추가
                     map.getView().animate({
                         center: fromLonLat(lonLat, getProjection(projection)),
                         zoom: 16,
