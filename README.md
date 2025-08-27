@@ -20,14 +20,21 @@ react & nodejs
 ## .env
 - server 폴더 내 .env 생성 필요
 - [SIMSIMI WORKSHOP](https://workshop.simsimi.com/)에서 API KEY 발급 후 작성
+- client 폴더 내 .env 생성 필요
+- VWorld API KEY 발급 후 작성
 
-### example
+### example(server)
 ```
 PORT=3001
 MONGO_URL=mongodb://127.0.0.1:27017/chat
 SECRET_KEY=xxx
 SIMSIMI_API_URL=https://wsapi.simsimi.com/190410/talk
 SIMSIMI_API_KEY=xxx
+```
+
+### example(client)
+```
+REACT_APP_VWORLD_API_KEY=xxx
 ```
 
 ### 설치법
