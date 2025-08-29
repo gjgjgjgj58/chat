@@ -27,14 +27,15 @@ react & nodejs
 ```
 PORT=3001
 MONGO_URL=mongodb://127.0.0.1:27017/chat
-SECRET_KEY=xxx
+SECRET_KEY=(임의의 암호키 입력)
 SIMSIMI_API_URL=https://wsapi.simsimi.com/190410/talk
-SIMSIMI_API_KEY=xxx
+SIMSIMI_API_KEY=(API키 입력)
+VWORLD_API_KEY=(API키 입력)
 ```
 
 ### example(client)
 ```
-REACT_APP_VWORLD_API_KEY=xxx
+REACT_APP_VWORLD_API_KEY=(API키 입력)
 ```
 
 ### 설치법
