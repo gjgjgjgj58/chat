@@ -39,6 +39,7 @@ export default class BotService extends ChatService {
 
             // simsimi status code
             if (botRes.ok) {
+                const botJson = await botRes.json();
                 atext = botJson.atext;
             } else if (botRes.status === 228) {
                 atext = '질문에 대한 답변을 찾을 수 없어요.';
@@ -47,8 +48,6 @@ export default class BotService extends ChatService {
             } else {
                 return errResponse(botRes.status, 'Bot Server Error');
             }
-
-            const botJson = await botRes.json();
 
             const payload = {
                 email: this.simsimi.email,

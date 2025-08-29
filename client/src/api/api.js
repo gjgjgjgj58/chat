@@ -32,4 +32,9 @@ const sendMessageToSimsimi = async (chat) => {
     return instance.post('/chat/simsimi/send', chat);
 };
 
-export { validation, refresh, signIn, signOut, signUp, getRoom, getChatList, sendMessageToSimsimi };
+const geocoding = async (lonLat) => {
+    lonLat = lonLat.join();
+    return instance.get(`/map/geocoding?lonLat=${lonLat}`);
+};
+
+export { validation, refresh, signIn, signOut, signUp, getRoom, getChatList, sendMessageToSimsimi, geocoding };

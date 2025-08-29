@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import chatRouter from '@/routes/chat';
 import roomRouter from '@/routes/room';
 import userRouter from '@/routes/user';
+import mapRouter from '@/routes/map';
 import { check_id } from '@/utils/interceptor';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -37,6 +38,7 @@ app.use(check_id);
 app.use('/api', chatRouter);
 app.use('/api', roomRouter);
 app.use('/api', userRouter);
+app.use('/api', mapRouter);
 
 app.listen(port, () => {
     console.log(`${port}`);

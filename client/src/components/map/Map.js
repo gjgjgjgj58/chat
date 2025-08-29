@@ -2,7 +2,7 @@ import React, {useState, useEffect} from 'react';
 import 'ol/ol.css';
 import Title from "@/components/map/Title";
 import {Map as OlMap, View} from 'ol';
-import {fromLonLat, get as getProjection} from 'ol/proj';
+import {fromLonLat, toLonLat, get as getProjection} from 'ol/proj';
 import {Tile as TileLayer} from 'ol/layer';
 import {XYZ} from 'ol/source';
 import VectorSource from 'ol/source/Vector';
@@ -12,6 +12,8 @@ import Point from 'ol/geom/Point';
 import {Style, Text, Fill, Stroke, Icon} from 'ol/style';
 import Overlay from 'ol/Overlay';
 import Select from 'ol/interaction/Select';
+import {geocoding} from "@/api/api";
+import {axiosResponse} from "@/utils/common";
 
 const projection = 'EPSG:3857';
 
@@ -43,6 +45,7 @@ const createFeature = (lonLat, text, avatar) => {
     const pointFeature = new Feature({
         geometry: new Point(fromLonLat(lonLat)),
         name: text, // 피처에 이름 속성 추가
+        avatar: avatar, // 피처에 아바타 속성 추가
     });
     pointFeature.setStyle(setFeatureStyle(text, avatar));
     return pointFeature;
@@ -129,26 +132,30 @@ export default function Map(props) {
 
         const selectSingleClick = new Select({
             style: function (feature) {
-                const label = feature.get('name');
-                if (label === myPositionLabel) {
-                    return setFeatureStyle(label, myPositionSrc);
-                } else if (label === simsimiLabel) {
-                    return setFeatureStyle(label, simsimiSrc);
-                }
-                return null;
+                return setFeatureStyle(feature.get('name'), feature.get('avatar'));
             }
         });
 
         selectSingleClick.on('select', (e) => {
-            const feature = e.selected[0];
-            console.log(feature);
-            if (feature) {
-                const coordinate = feature.getGeometry().getCoordinates();
-                content.innerHTML = '<p>' + feature.get("name") + '</p><code></code>';
-                overlay.setPosition(coordinate);
+            const selectedFeature = e.selected[0];
+            if (selectedFeature) {
+                const coordinate = selectedFeature.getGeometry().getCoordinates();
+                setTimeout(async function () {
+                    const res = await geocoding(toLonLat(coordinate, getProjection(projection)));
+
+                    axiosResponse(
+                        res,
+                        async () => {
+                            const feature = await setAddress(res, selectedFeature);
+                            content.innerHTML = '<p>' + feature.get("name") + '</p><code>' + feature.get("address") + '</code>';
+                            overlay.setPosition(coordinate);
+                        },
+                        () => alert(res.data.message)
+                    );
+                });
             }
             const deselectedFeature = e.deselected[0];
-            if (deselectedFeature && !feature) {
+            if (deselectedFeature && !selectedFeature) {
                 overlay.setPosition(undefined);
                 closer.blur();
                 return false;
@@ -207,6 +214,22 @@ export default function Map(props) {
 
         return () => map.setTarget(undefined);
     }, []);
+
+    const setAddress = async (res, feature) => {
+        let address = null;
+        if (res.data && res.data.result) {
+            // 지번
+            address = res.data.result[0].text;
+        }
+        if (res.data.result.length > 1) {
+            // 도로명주소
+            address = res.data.result[1].text;
+        }
+        if (feature && address) {
+            feature.set('address', address);
+        }
+        return feature;
+    };
 
     return (
         <div className={'chatApp__mapContainer'}>
