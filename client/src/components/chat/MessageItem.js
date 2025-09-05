@@ -8,11 +8,12 @@ export default class MessageItem extends React.Component {
 
     render = () => {
         const messagePosition = this.props.owner == this.props.sender ? 'chatApp__convMessageItem--right' : 'chatApp__convMessageItem--left';
+        const htmlMessage = this.props.message?.replace(/\n/g, '<br/>');
 
         return (
             <div className={`chatApp__convMessageItem clearfix ${messagePosition}`}>
                 <Avatar avatar={this.props.senderAvatar} sender={this.props.sender} />
-                <div className='chatApp__convMessageValue' dangerouslySetInnerHTML={{ __html: this.props.message }}></div>
+                <div className='chatApp__convMessageValue' dangerouslySetInnerHTML={{ __html: htmlMessage }}></div>
             </div>
         );
     };

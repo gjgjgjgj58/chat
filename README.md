@@ -11,7 +11,7 @@
 <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&amp;logo=JavaScript&amp;logoColor=white" /> <img src="https://img.shields.io/badge/MongoDB-47A248?style=flat&amp;logo=MongoDB&amp;logoColor=white" />
 
 react & nodejs
-봇(심심이)과 채팅할 수 있는 개인 공부용 앱 개발
+봇(심심이, 제미나이)과 채팅할 수 있는 개인 공부용 앱 개발
 
 ## Refer to
 - [Codepen - React Chat](https://codepen.io/swaibu/pen/OJLZjLb)
@@ -22,15 +22,21 @@ react & nodejs
 - [SIMSIMI WORKSHOP](https://workshop.simsimi.com/)에서 API KEY 발급 후 작성
 - client 폴더 내 .env 생성 필요
 - VWorld API KEY 발급 후 작성
+- Google AI Studio API KEY(Gemini) 발급 후 작성
 
 ### example(server)
 ```
 PORT=3001
 MONGO_URL=mongodb://127.0.0.1:27017/chat
-SECRET_KEY=(임의의 암호키 입력)
+SECRET_KEY=xxx
+
+VWORLD_API_KEY=xxx
+
 SIMSIMI_API_URL=https://wsapi.simsimi.com/190410/talk
-SIMSIMI_API_KEY=(API키 입력)
-VWORLD_API_KEY=(API키 입력)
+SIMSIMI_API_KEY=xxx
+
+GEMINI_API_URL=https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent
+GEMINI_API_KEY=xxx
 ```
 
 ### example(client)
