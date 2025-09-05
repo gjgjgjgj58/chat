@@ -6,7 +6,7 @@
 
 import React from 'react';
 import ChatBox from '@/components/chat/ChatBox';
-import { getChatList, sendMessageToSimsimi } from '@/api/api';
+import { getChatList, sendMessageToGemini, sendMessageToSimsimi } from '@/api/api';
 import { axiosResponse, detectURL } from '@/utils/common';
 
 export default class BotRoom extends React.Component {
@@ -74,7 +74,7 @@ export default class BotRoom extends React.Component {
                 roomId: this.state.user.roomId,
                 ...newMessageItem
             };
-            const res = await sendMessageToSimsimi(messageItem);
+            const res = await sendMessageToGemini(messageItem);
 
             axiosResponse(
                 res,

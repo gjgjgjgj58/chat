@@ -1,6 +1,8 @@
 import {errResponse, serverErrResponse, dataResponse} from '@/utils/common';
 
 export default class MapService {
+    static VWORLD_API_KEY = process.env.VWORLD_API_KEY;
+
     constructor(body) {
         this.lonLat = body.lonLat;
         this.projection = body.projection;
@@ -13,7 +15,7 @@ export default class MapService {
             const projection = this.projection || "epsg:4326";
             const point = this.lonLat;
             const VWORLD_API_URL = 'https://api.vworld.kr/req/address';
-            const res = await fetch(`${VWORLD_API_URL}?service=address&request=getAddress&version=2.0&crs=${projection}&point=${point}&format=json&type=both&zipcode=true&simple=false&key=${process.env.VWORLD_API_KEY}`, {
+            const res = await fetch(`${VWORLD_API_URL}?service=address&request=getAddress&version=2.0&crs=${projection}&point=${point}&format=json&type=both&zipcode=true&simple=false&key=${MapService.VWORLD_API_KEY}`, {
                 headers: {
                     'Content-Type': 'application/json;charset=utf-8'
                 },

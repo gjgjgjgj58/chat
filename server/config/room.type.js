@@ -5,4 +5,7 @@ export default class RoomType {
     static get SIMSIMI() {
         return 1;
     }
+    static get GEMINI() {
+        return 2;
+    }
 }

@@ -32,9 +32,13 @@ const sendMessageToSimsimi = async (chat) => {
     return instance.post('/chat/simsimi/send', chat);
 };
 
+const sendMessageToGemini = async (chat) => {
+    return instance.post('/chat/gemini/send', chat);
+};
+
 const geocoding = async (lonLat) => {
     lonLat = lonLat.join();
     return instance.get(`/map/geocoding?lonLat=${lonLat}`);
 };
 
-export { validation, refresh, signIn, signOut, signUp, getRoom, getChatList, sendMessageToSimsimi, geocoding };
+export { validation, refresh, signIn, signOut, signUp, getRoom, getChatList, sendMessageToSimsimi, sendMessageToGemini, geocoding };

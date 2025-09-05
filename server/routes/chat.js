@@ -30,4 +30,16 @@ router.post('/chat/simsimi/send', verifyToken, async (req, res, next) => {
     }
 });
 
+router.post('/chat/gemini/send', verifyToken, async (req, res, next) => {
+    try {
+        const chatService = new BotService(req.body);
+        const result = await chatService.sendMessageToGemini();
+
+        res.status(result.status).send(result.message);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send(serverErrResponse(err).message);
+    }
+});
+
 module.exports = router;

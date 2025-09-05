@@ -8,6 +8,10 @@ export default class Bot {
                 this.sender = '심심이';
                 this.senderAvatar = '/images/chatbot.png';
                 break;
+            case RoomType.GEMINI:
+                this.email = 'bot_gemini';
+                this.sender = '제미나이';
+                this.senderAvatar = '/images/gemini-color.png';
             default:
                 break;
         }
